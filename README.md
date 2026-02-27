@@ -69,84 +69,91 @@ src/
 ## 🛠️ Installation
 
 1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd post
-   ```
+
+    ```bash
+    git clone <repository-url>
+    cd post
+    ```
 
 2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+
+    ```bash
+    npm install
+    ```
 
 3. **Environment Configuration**
-   The service includes a pre-configured `.env.docker` file with the following variables:
-   ```env
-   # App Configuration
-   NODE_ENV="local"
-   APP_NAME="@backendworks/post"
-   APP_CORS_ORIGINS="*"
-   APP_DEBUG=true
+   The service includes a pre-configured `.env` file with the following variables:
 
-   # HTTP Configuration
-   HTTP_ENABLE=true
-   HTTP_HOST="0.0.0.0"
-   HTTP_PORT=9002
-   HTTP_VERSIONING_ENABLE=true
-   HTTP_VERSION=1
+    ```env
+    # App Configuration
+    NODE_ENV="local"
+    APP_NAME="@backendworks/post"
+    APP_CORS_ORIGINS="*"
+    APP_DEBUG=true
 
-   # Database Configuration
-   DATABASE_URL="postgresql://admin:master123@localhost:5432/postgres?schema=public"
+    # HTTP Configuration
+    HTTP_ENABLE=true
+    HTTP_HOST="0.0.0.0"
+    HTTP_PORT=9002
+    HTTP_VERSIONING_ENABLE=true
+    HTTP_VERSION=1
 
-   # JWT Configuration
-   ACCESS_TOKEN_SECRET_KEY="EAJYjNJUnRGJ6uq1YfGw4NG1pd1z102J"
-   ACCESS_TOKEN_EXPIRED="1d"
-   REFRESH_TOKEN_SECRET_KEY="LcnlpiuHIJ6eS51u1mcOdk0P49r2Crwu"
-   REFRESH_TOKEN_EXPIRED="7d"
+    # Database Configuration
+    DATABASE_URL="postgresql://admin:master123@localhost:5432/postgres?schema=public"
 
-   # Redis Configuration
-   REDIS_URL="redis://localhost:6379"
-   REDIS_KEY_PREFIX="post:"
-   REDIS_TTL=3600
+    # JWT Configuration
+    ACCESS_TOKEN_SECRET_KEY="EAJYjNJUnRGJ6uq1YfGw4NG1pd1z102J"
+    ACCESS_TOKEN_EXPIRED="1d"
+    REFRESH_TOKEN_SECRET_KEY="LcnlpiuHIJ6eS51u1mcOdk0P49r2Crwu"
+    REFRESH_TOKEN_EXPIRED="7d"
 
-   # gRPC Configuration
-   GRPC_URL="0.0.0.0:50052"
-   GRPC_PACKAGE="post"
-   GRPC_AUTH_URL="0.0.0.0:50051"
-   GRPC_AUTH_PACKAGE="auth"
-   ```
+    # Redis Configuration
+    REDIS_URL="redis://localhost:6379"
+    REDIS_KEY_PREFIX="post:"
+    REDIS_TTL=3600
+
+    # gRPC Configuration
+    GRPC_URL="0.0.0.0:50052"
+    GRPC_PACKAGE="post"
+    GRPC_AUTH_URL="0.0.0.0:50051"
+    GRPC_AUTH_PACKAGE="auth"
+    ```
 
 4. **Database Setup**
-   ```bash
-   # Generate Prisma client
-   npm run prisma:generate
 
-   # Run migrations
-   npm run prisma:migrate
+    ```bash
+    # Generate Prisma client
+    npm run prisma:generate
 
-   # (Optional) Open Prisma Studio
-   npm run prisma:studio
-   ```
+    # Run migrations
+    npm run prisma:migrate
+
+    # (Optional) Open Prisma Studio
+    npm run prisma:studio
+    ```
 
 5. **Generate gRPC code**
-   ```bash
-   npm run proto:generate
-   ```
+    ```bash
+    npm run proto:generate
+    ```
 
 ## 🚀 Running the Service
 
 ### Development Mode
+
 ```bash
 npm run dev
 ```
 
 ### Production Mode
+
 ```bash
 npm run build
 npm start
 ```
 
 ### Docker (if available)
+
 ```bash
 docker build -t post-service .
 docker run -p 9002:9002 post-service
@@ -157,9 +164,11 @@ docker run -p 9002:9002 post-service
 ### Post Management Endpoints
 
 #### Public Endpoints
+
 - `GET /post` - List all posts (paginated)
 
 #### Protected Endpoints
+
 - `POST /post` - Create new post
 - `PUT /post/:id` - Update post
 - `DELETE /post/batch` - Bulk delete posts
@@ -167,26 +176,31 @@ docker run -p 9002:9002 post-service
 ### Query Parameters
 
 #### Pagination
+
 - `page` (number): Page number (default: 1)
 - `limit` (number): Items per page (default: 10, max: 100)
 
 #### Search & Filtering
+
 - `search` (string): Search in title and content
 - `sortBy` (string): Sort field (default: createdAt)
 - `sortOrder` (string): Sort order - 'asc' or 'desc' (default: desc)
 
 #### Post List Specific
+
 - `authorId` (string): Filter by author ID
 - `page` (number): Page number
 - `limit` (number): Items per page
 
 ### Health Check
+
 - `GET /health` - Service health status
 - `GET /` - Service information
 
 ## 🔌 gRPC Services
 
 ### PostService
+
 - `CreatePost` - Create a new post
 - `GetPost` - Get a single post by ID
 - `GetPosts` - Get paginated list of posts
@@ -198,65 +212,73 @@ docker run -p 9002:9002 post-service
 The service uses a modular configuration system with environment-specific settings:
 
 ### App Configuration
+
 - **Name**: Service name and display information
 - **Environment**: Development, staging, production
 - **Debug**: Debug mode settings
 - **CORS**: Cross-origin resource sharing settings
 
 ### HTTP Configuration
+
 - **Port**: HTTP server port (default: 9002)
 - **Host**: HTTP server host
 - **Versioning**: API versioning settings
 
 ### Database Configuration
+
 - **URL**: PostgreSQL connection string
 - **Migrations**: Database migration settings
 
 ### Redis Configuration
+
 - **URL**: Redis connection string
 - **Key Prefix**: Cache key prefix
 - **TTL**: Cache time-to-live
 
 ### gRPC Configuration
+
 - **URL**: gRPC server address
 - **Package**: Protocol buffer package name
 
 ### Auth Service Integration
+
 - **URL**: Auth service gRPC address for token validation
 
 ## 📊 Data Models
 
 ### Post Entity
+
 ```typescript
 interface Post {
-  id: string;
-  title: string;
-  content: string;
-  images: string[];
-  createdBy: string;
-  updatedBy?: string;
-  deletedBy?: string;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt?: Date;
-  isDeleted: boolean;
+    id: string;
+    title: string;
+    content: string;
+    images: string[];
+    createdBy: string;
+    updatedBy?: string;
+    deletedBy?: string;
+    createdAt: Date;
+    updatedAt: Date;
+    deletedAt?: Date;
+    isDeleted: boolean;
 }
 ```
 
 ### Post Response DTO
+
 ```typescript
 interface PostResponseDto {
-  id: string;
-  title: string;
-  content: string;
-  createdBy: UserResponseDto;
-  images: string[];
-  createdAt: Date;
-  updatedAt: Date;
-  updatedBy?: UserResponseDto;
-  deletedBy?: UserResponseDto;
-  deletedAt?: Date;
-  isDeleted: boolean;
+    id: string;
+    title: string;
+    content: string;
+    createdBy: UserResponseDto;
+    images: string[];
+    createdAt: Date;
+    updatedAt: Date;
+    updatedBy?: UserResponseDto;
+    deletedBy?: UserResponseDto;
+    deletedAt?: Date;
+    isDeleted: boolean;
 }
 ```
 
@@ -276,6 +298,7 @@ npm run test:cov
 ## 📚 API Documentation
 
 When running in development mode, Swagger documentation is available at:
+
 ```
 http://localhost:9002/docs
 ```
@@ -299,12 +322,15 @@ http://localhost:9002/docs
 ## 🔄 Service Integration
 
 ### Auth Service Integration
+
 The Post Service integrates with the Auth Service via gRPC for:
+
 - **Token Validation**: Validate JWT tokens
 - **User Information**: Get user details for post creation/updates
 - **Authorization**: Check user permissions
 
 ### Integration Points
+
 - **gRPC Client**: Connects to Auth Service for authentication
 - **User Context**: Extracts user information from JWT tokens
 - **Audit Trail**: Tracks user actions on posts
@@ -312,18 +338,23 @@ The Post Service integrates with the Auth Service via gRPC for:
 ## 🚀 Deployment
 
 ### Environment Variables
+
 Ensure all required environment variables are set in your deployment environment.
 
 ### Database Migrations
+
 Run database migrations before starting the service:
+
 ```bash
 npm run prisma:migrate:prod
 ```
 
 ### Health Checks
+
 The service provides health check endpoints for load balancers and monitoring systems.
 
 ### Service Dependencies
+
 Ensure the Auth Service is running and accessible before starting the Post Service.
 
 ## 🔧 Development

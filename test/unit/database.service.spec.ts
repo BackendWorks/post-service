@@ -1,47 +1,80 @@
 import { DatabaseService } from '../../src/common/services/database.service';
+import { createPostDbManager } from '@backendworks/post-db';
+
+jest.mock('@backendworks/post-db', () => ({
+    createPostDbManager: jest.fn(),
+}));
 
 describe('DatabaseService', () => {
     let service: DatabaseService;
-    let mockLogger: any;
-    let mockPrisma: any;
+    let mockPostRepository: any;
+    let mockDbManager: any;
 
     beforeEach(() => {
-        mockLogger = { log: jest.fn(), error: jest.fn() };
-        mockPrisma = { $connect: jest.fn(), $disconnect: jest.fn() };
-        service = new DatabaseService(mockPrisma as any, mockLogger);
+        mockPostRepository = {
+            findById: jest.fn(),
+            findOne: jest.fn(),
+            findMany: jest.fn(),
+            create: jest.fn(),
+            update: jest.fn(),
+            softDelete: jest.fn(),
+            softDeleteMany: jest.fn(),
+            count: jest.fn(),
+        };
+        mockDbManager = {
+            postRepository: mockPostRepository,
+            disconnect: jest.fn().mockResolvedValue(undefined),
+        };
+        (createPostDbManager as jest.Mock).mockReturnValue(mockDbManager);
+
+        service = new DatabaseService();
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
     });
 
     it('should be defined', () => {
         expect(service).toBeDefined();
     });
 
+    it('should expose postRepository from dbManager', () => {
+        expect(service.postRepository).toBe(mockPostRepository);
+    });
+
     it('should call onModuleInit and log success', async () => {
-        mockPrisma.$connect.mockResolvedValue(undefined);
+        const logSpy = jest.spyOn(service['logger'], 'log').mockImplementation();
         await service.onModuleInit();
-        expect(mockPrisma.$connect).toHaveBeenCalled();
-        expect(mockLogger.log).toHaveBeenCalledWith('Database connection established');
+        expect(logSpy).toHaveBeenCalledWith('Database connection established');
     });
 
-    it('should call onModuleInit and log error', async () => {
-        const error = new Error('fail');
-        mockPrisma.$connect.mockRejectedValue(error);
-        try {
-            await service.onModuleInit();
-        } catch (e) {}
-        expect(mockLogger.error).toHaveBeenCalledWith('Failed to connect to database', error);
-    });
-
-    it('should call onModuleDestroy and log success', async () => {
-        mockPrisma.$disconnect.mockResolvedValue(undefined);
+    it('should call onModuleDestroy and disconnect', async () => {
+        const logSpy = jest.spyOn(service['logger'], 'log').mockImplementation();
         await service.onModuleDestroy();
-        expect(mockPrisma.$disconnect).toHaveBeenCalled();
-        expect(mockLogger.log).toHaveBeenCalledWith('Database connection closed');
+        expect(mockDbManager.disconnect).toHaveBeenCalled();
+        expect(logSpy).toHaveBeenCalledWith('Database connection closed');
     });
 
-    it('should call onModuleDestroy and log error', async () => {
+    it('should log error when onModuleDestroy fails', async () => {
         const error = new Error('fail');
-        mockPrisma.$disconnect.mockRejectedValue(error);
+        const errorSpy = jest.spyOn(service['logger'], 'error').mockImplementation();
+        mockDbManager.disconnect.mockRejectedValue(error);
         await service.onModuleDestroy();
-        expect(mockLogger.error).toHaveBeenCalledWith('Error closing database connection', error);
+        expect(errorSpy).toHaveBeenCalledWith('Error closing database connection', error);
+    });
+
+    it('should return healthy status when count succeeds', async () => {
+        mockPostRepository.count.mockResolvedValue(5);
+        const result = await service.isHealthy();
+        expect(result).toEqual({ database: { status: 'up', connection: 'active' } });
+    });
+
+    it('should return unhealthy status when count throws', async () => {
+        const mockError = new Error('DB error');
+        jest.spyOn(service['logger'], 'error').mockImplementation();
+        mockPostRepository.count.mockRejectedValue(mockError);
+        const result = await service.isHealthy();
+        expect(result).toEqual({ database: { status: 'down', connection: 'failed', error: mockError.message } });
     });
 });
+

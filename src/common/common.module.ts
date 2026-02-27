@@ -25,7 +25,7 @@ import { GrpcAuthModule } from '@/services/auth/grpc.auth.module';
             load: configs,
             isGlobal: true,
             cache: true,
-            envFilePath: ['.env.docker', '.env'],
+            envFilePath: ['.env'],
             expandVariables: true,
             validationSchema: Joi.object({
                 // App Configuration

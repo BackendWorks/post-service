@@ -1,19 +1,23 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { HealthIndicatorResult } from '@nestjs/terminus';
-import { PrismaClient } from '@prisma/client';
+import { createPostDbManager, IPostDbManager, IPostRepository } from '@backendworks/post-db';
 
 @Injectable()
-export class DatabaseService extends PrismaClient {
+export class DatabaseService {
     protected logger: Logger;
+    private readonly dbManager: IPostDbManager;
 
     constructor() {
-        super();
         this.logger = new Logger(DatabaseService.name);
+        this.dbManager = createPostDbManager(process.env.DATABASE_URL as string);
+    }
+
+    get postRepository(): IPostRepository {
+        return this.dbManager.postRepository;
     }
 
     async onModuleInit(): Promise<void> {
         try {
-            await this.$connect();
             this.logger.log('Database connection established');
         } catch (error) {
             this.logger.error('Failed to connect to database', error);
@@ -23,7 +27,7 @@ export class DatabaseService extends PrismaClient {
 
     async onModuleDestroy(): Promise<void> {
         try {
-            await this.$disconnect();
+            await this.dbManager.disconnect();
             this.logger.log('Database connection closed');
         } catch (error) {
             this.logger.error('Error closing database connection', error);
@@ -32,7 +36,7 @@ export class DatabaseService extends PrismaClient {
 
     async isHealthy(): Promise<HealthIndicatorResult> {
         try {
-            await this.$queryRaw`SELECT 1`;
+            await this.dbManager.postRepository.count();
             return {
                 database: {
                     status: 'up',

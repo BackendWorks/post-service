@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Post } from '@prisma/client';
+import { Post } from '@backendworks/post-db';
 
 import { PostResponseDto } from '../dtos/post.response.dto';
 import { ROLE } from '../../../common/enums/app.enum';

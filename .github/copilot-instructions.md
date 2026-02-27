@@ -19,8 +19,8 @@ Run all Prisma commands from `packages/post-db/` instead:
 
 ```bash
 # from packages/post-db/
-npm run prisma:migrate   # dotenv -e .env.docker -- prisma migrate dev
-npm run prisma:studio    # dotenv -e .env.docker -- prisma studio
+npm run prisma:migrate   # dotenv -e .env -- prisma migrate dev
+npm run prisma:studio    # dotenv -e .env -- prisma studio
 ```
 
 ## REST Endpoints
