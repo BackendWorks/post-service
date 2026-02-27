@@ -28,7 +28,10 @@ export class QueryBuilderService {
             sortBy,
             sortOrder: sortOrder as 'asc' | 'desc',
             relations,
-            customFilters: { ...this.buildExtraFilters(dto), ...customFilters } as Record<string, unknown>,
+            customFilters: { ...this.buildExtraFilters(dto), ...customFilters } as Record<
+                string,
+                unknown
+            >,
         });
 
         return result as unknown as PaginatedResult<T>;

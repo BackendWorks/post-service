@@ -98,11 +98,9 @@ describe('GrpcAuthService', () => {
 
             const result = await service.getUserById('user-1');
 
-            expect(mockGrpcClientService.call).toHaveBeenCalledWith(
-                'AuthService',
-                'GetUserById',
-                { id: 'user-1' },
-            );
+            expect(mockGrpcClientService.call).toHaveBeenCalledWith('AuthService', 'GetUserById', {
+                id: 'user-1',
+            });
             expect(result).toEqual(mockUser);
         });
 
@@ -119,11 +117,9 @@ describe('GrpcAuthService', () => {
 
             const result = await service.getUserById('');
 
-            expect(mockGrpcClientService.call).toHaveBeenCalledWith(
-                'AuthService',
-                'GetUserById',
-                { id: '' },
-            );
+            expect(mockGrpcClientService.call).toHaveBeenCalledWith('AuthService', 'GetUserById', {
+                id: '',
+            });
             expect(result).toEqual(mockUser);
         });
     });

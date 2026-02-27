@@ -196,7 +196,9 @@ describe('QueryBuilderService', () => {
 
         it('should cap limit at 100', async () => {
             const mockPosts = [{ id: '1', title: 'Limited Post', content: 'Content' }];
-            mockPostRepository.findMany.mockResolvedValue(makePaginatedResult(mockPosts, 1, 1, 100));
+            mockPostRepository.findMany.mockResolvedValue(
+                makePaginatedResult(mockPosts, 1, 1, 100),
+            );
 
             const result = await service.findManyWithPagination({
                 model: 'post',

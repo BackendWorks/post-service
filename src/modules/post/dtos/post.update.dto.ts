@@ -22,10 +22,7 @@ export class PostUpdateDto {
 
     @ApiProperty({
         description: 'Array of image URLs',
-        example: [
-            'https://example.com/image1.jpg',
-            'https://example.com/image2.jpg',
-        ],
+        example: ['https://example.com/image1.jpg', 'https://example.com/image2.jpg'],
         required: false,
         type: [String],
     })

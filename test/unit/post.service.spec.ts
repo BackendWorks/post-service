@@ -303,7 +303,9 @@ describe('PostService', () => {
 
         it('should get posts with page 1 and multiple pages', async () => {
             const query = { page: 1, limit: 5 };
-            mockPostRepository.findMany.mockResolvedValue(buildResult(Array(5).fill(mockPost), 15, 1, 5));
+            mockPostRepository.findMany.mockResolvedValue(
+                buildResult(Array(5).fill(mockPost), 15, 1, 5),
+            );
             jest.spyOn(postMappingService, 'mapToResponse').mockReturnValue(mockPost as any);
 
             const result = await service.getPosts(query);
@@ -315,7 +317,9 @@ describe('PostService', () => {
 
         it('should get posts with page 2 and multiple pages', async () => {
             const query = { page: 2, limit: 5 };
-            mockPostRepository.findMany.mockResolvedValue(buildResult(Array(5).fill(mockPost), 15, 2, 5));
+            mockPostRepository.findMany.mockResolvedValue(
+                buildResult(Array(5).fill(mockPost), 15, 2, 5),
+            );
             jest.spyOn(postMappingService, 'mapToResponse').mockReturnValue(mockPost as any);
 
             const result = await service.getPosts(query);
@@ -327,7 +331,9 @@ describe('PostService', () => {
 
         it('should get posts with last page', async () => {
             const query = { page: 3, limit: 5 };
-            mockPostRepository.findMany.mockResolvedValue(buildResult(Array(5).fill(mockPost), 15, 3, 5));
+            mockPostRepository.findMany.mockResolvedValue(
+                buildResult(Array(5).fill(mockPost), 15, 3, 5),
+            );
             jest.spyOn(postMappingService, 'mapToResponse').mockReturnValue(mockPost as any);
 
             const result = await service.getPosts(query);
@@ -363,7 +369,9 @@ describe('PostService', () => {
 
         it('should get posts with page equal to totalPages', async () => {
             const query = { page: 2, limit: 5 };
-            mockPostRepository.findMany.mockResolvedValue(buildResult(Array(5).fill(mockPost), 10, 2, 5));
+            mockPostRepository.findMany.mockResolvedValue(
+                buildResult(Array(5).fill(mockPost), 10, 2, 5),
+            );
             jest.spyOn(postMappingService, 'mapToResponse').mockReturnValue(mockPost as any);
 
             const result = await service.getPosts(query);

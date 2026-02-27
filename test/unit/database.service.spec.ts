@@ -84,7 +84,8 @@ describe('DatabaseService', () => {
         jest.spyOn(service['logger'], 'error').mockImplementation();
         mockPostRepository.count.mockRejectedValue(mockError);
         const result = await service.isHealthy();
-        expect(result).toEqual({ database: { status: 'down', connection: 'failed', error: mockError.message } });
+        expect(result).toEqual({
+            database: { status: 'down', connection: 'failed', error: mockError.message },
+        });
     });
 });
-

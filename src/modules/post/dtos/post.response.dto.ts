@@ -30,10 +30,7 @@ export class PostResponseDto {
 
     @ApiProperty({
         description: 'Array of image URLs associated with the post',
-        example: [
-            'https://example.com/image1.jpg',
-            'https://example.com/image2.jpg',
-        ],
+        example: ['https://example.com/image1.jpg', 'https://example.com/image2.jpg'],
         type: [String],
     })
     images: string[];
@@ -65,8 +62,7 @@ export class PostResponseDto {
     deletedBy?: UserResponseDto;
 
     @ApiProperty({
-        description:
-            'The date and time when the post was deleted, if applicable',
+        description: 'The date and time when the post was deleted, if applicable',
         example: '2024-02-23T12:00:00Z',
         required: false,
     })

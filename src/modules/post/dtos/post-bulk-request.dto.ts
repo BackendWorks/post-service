@@ -1,11 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { ApiProperty } from '@nestjs/swagger';
-import {
-    ArrayMinSize,
-    ArrayUnique,
-    IsArray,
-    IsNotEmpty,
-} from 'class-validator';
+import { ArrayMinSize, ArrayUnique, IsArray, IsNotEmpty } from 'class-validator';
 
 export class PostBulkRequestDto {
     @ApiProperty({
