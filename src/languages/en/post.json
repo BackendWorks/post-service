@@ -1,0 +1,17 @@
+{
+    "success": {
+        "detailsFetched": "Post details have been retrieved successfully",
+        "listFetched": "Posts have been retrieved successfully",
+        "deleted": "Post has been deleted successfully",
+        "updated": "Post has been updated successfully",
+        "created": "Post has been created successfully"
+    },
+    "error": {
+        "notFound": "Post not found in database",
+        "exists": "Post with provided data already exists",
+        "unauthorized": "You are not authorized to perform this action on this post",
+        "forbidden": "You do not have permission to access this post",
+        "validation": "Post validation failed",
+        "duplicate": "A post with this title already exists"
+    }
+}

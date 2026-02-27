@@ -1,0 +1,101 @@
+syntax = "proto3";
+
+package post;
+
+service PostService {
+  rpc CreatePost(CreatePostRequest) returns (CreatePostResponse);
+  rpc GetPost(GetPostRequest) returns (GetPostResponse);
+  rpc GetPosts(GetPostsRequest) returns (GetPostsResponse);
+  rpc UpdatePost(UpdatePostRequest) returns (UpdatePostResponse);
+  rpc DeletePost(DeletePostRequest) returns (DeletePostResponse);
+}
+
+message CreatePostRequest {
+  string title = 1;
+  string content = 2;
+  string author_id = 3;
+}
+
+message CreatePostResponse {
+  bool success = 1;
+  CreatePostResponsePayload payload = 2;
+}
+
+message CreatePostResponsePayload {
+  string id = 1;
+  string title = 2;
+  string content = 3;
+  string author_id = 4;
+  string created_at = 5;
+  string updated_at = 6;
+}
+
+message GetPostRequest {
+  string id = 1;
+}
+
+message GetPostResponse {
+  bool success = 1;
+  GetPostResponsePayload payload = 2;
+}
+
+message GetPostResponsePayload {
+  string id = 1;
+  string title = 2;
+  string content = 3;
+  string author_id = 4;
+  string created_at = 5;
+  string updated_at = 6;
+}
+
+message GetPostsRequest {
+  int32 page = 1;
+  int32 limit = 2;
+  string search = 3;
+}
+
+message GetPostsResponse {
+  bool success = 1;
+  GetPostsResponsePayload payload = 2;
+}
+
+message GetPostsResponsePayload {
+  repeated GetPostResponsePayload posts = 1;
+  int32 total = 2;
+  int32 page = 3;
+  int32 limit = 4;
+}
+
+message UpdatePostRequest {
+  string id = 1;
+  string title = 2;
+  string content = 3;
+}
+
+message UpdatePostResponse {
+  bool success = 1;
+  UpdatePostResponsePayload payload = 2;
+}
+
+message UpdatePostResponsePayload {
+  string id = 1;
+  string title = 2;
+  string content = 3;
+  string author_id = 4;
+  string created_at = 5;
+  string updated_at = 6;
+}
+
+message DeletePostRequest {
+  string id = 1;
+}
+
+message DeletePostResponse {
+  bool success = 1;
+  DeletePostResponsePayload payload = 2;
+}
+
+message DeletePostResponsePayload {
+  string id = 1;
+  bool deleted = 2;
+}
