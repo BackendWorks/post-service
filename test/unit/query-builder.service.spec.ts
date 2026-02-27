@@ -292,6 +292,24 @@ describe('QueryBuilderService', () => {
             );
         });
 
+        it('should handle date filtering', async () => {
+            mockPostRepository.findMany.mockResolvedValue(makePaginatedResult([], 0));
+
+            await service.findManyWithPagination({
+                model: 'post',
+                dto: { page: 1, limit: 10, createdDate: '2023-01-01' },
+                searchFields: ['title', 'content'],
+            });
+
+            expect(mockPostRepository.findMany).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    customFilters: expect.objectContaining({
+                        createdDate: { gte: new Date('2023-01-01') },
+                    }),
+                }),
+            );
+        });
+
         it('should handle array filtering', async () => {
             mockPostRepository.findMany.mockResolvedValue(makePaginatedResult([], 0));
 
@@ -384,6 +402,19 @@ describe('QueryBuilderService', () => {
                     }),
                 }),
             );
+        });
+
+        it('should handle non-string scalar values in dto (else branch)', async () => {
+            mockPostRepository.findMany.mockResolvedValue(makePaginatedResult([], 0));
+
+            await service.findManyWithPagination({
+                model: 'post',
+                dto: { page: 1, limit: 10, isPublished: true, viewCount: 42 },
+            });
+
+            const callArg = mockPostRepository.findMany.mock.calls[0][0];
+            expect(callArg.customFilters).toHaveProperty('isPublished', true);
+            expect(callArg.customFilters).toHaveProperty('viewCount', 42);
         });
     });
 

@@ -208,6 +208,19 @@ describe('PostService', () => {
             expect(result.meta.total).toBe(1);
         });
 
+        it('should use default page and limit when not provided', async () => {
+            const query = {} as any;
+            mockPostRepository.findMany.mockResolvedValue(buildResult([mockPost], 1));
+            jest.spyOn(postMappingService, 'mapToResponse').mockReturnValue(mockPost as any);
+
+            const result = await service.getPosts(query);
+
+            expect(mockPostRepository.findMany).toHaveBeenCalledWith(
+                expect.objectContaining({ page: 1, limit: 10 }),
+            );
+            expect(result.meta.total).toBe(1);
+        });
+
         it('should get posts with falsy authorId', async () => {
             const query = { page: 1, limit: 10, authorId: '' };
             mockPostRepository.findMany.mockResolvedValue(buildResult([mockPost], 1));
