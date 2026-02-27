@@ -1,5 +1,4 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
 import { PostCreateDto } from '../dtos/post-create.dto';
@@ -9,7 +8,6 @@ import { PostUpdateDto } from '../dtos/post.update.dto';
 import { PostBulkResponseDto } from '../dtos/post-bulk-response.dto';
 import { IPostService } from '../interfaces/post-service.interface';
 import { PostMappingService } from './post-mapping.service';
-import { POST_WORKER_CLIENT } from '../post.module';
 
 import { DatabaseService } from '../../../common/services/database.service';
 import { QueryBuilderService } from '../../../common/services/query-builder.service';
@@ -19,13 +17,10 @@ import { PaginatedResult } from '../../../common/interfaces/query-builder.interf
 
 @Injectable()
 export class PostService implements IPostService {
-    private readonly logger = new Logger(PostService.name);
-
     constructor(
         private readonly databaseService: DatabaseService,
         private readonly postMappingService: PostMappingService,
         private readonly queryBuilderService: QueryBuilderService,
-        @Inject(POST_WORKER_CLIENT) private readonly postWorkerClient: ClientProxy,
     ) {}
 
     async create(createPostDto: PostCreateDto, userId: string): Promise<PostResponseDto> {
@@ -49,24 +44,7 @@ export class PostService implements IPostService {
             },
         });
 
-        const response = await this.postMappingService.enrichPostData(post);
-
-        // Emit async event to post-worker for search indexing.
-        // Fire-and-forget: failures are logged but do not affect the create response.
-        this.postWorkerClient
-            .emit('post.created', {
-                postId: post.id,
-                title: post.title,
-                content: post.content,
-                authorId: post.createdBy,
-                createdAt: post.createdAt.toISOString(),
-            })
-            .subscribe({
-                error: err =>
-                    this.logger.error(`Failed to emit post.created for postId: ${post.id}`, err),
-            });
-
-        return response;
+        return this.postMappingService.enrichPostData(post);
     }
 
     async findAll(queryParams: ApiBaseQueryDto): Promise<PaginatedApiResponseDto<PostResponseDto>> {

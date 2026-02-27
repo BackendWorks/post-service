@@ -63,10 +63,6 @@ import { GrpcAuthModule } from '@/services/auth/grpc.auth.module';
                 // Auth Service GRPC Configuration
                 GRPC_AUTH_URL: Joi.string().required(),
                 GRPC_AUTH_PACKAGE: Joi.string().default('auth'),
-
-                // RabbitMQ
-                RABBITMQ_URL: Joi.string().required(),
-                RABBITMQ_POST_WORKER_QUEUE: Joi.string().default('post_worker_queue'),
             }),
         }),
         CacheModule.registerAsync({
