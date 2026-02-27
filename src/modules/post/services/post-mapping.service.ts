@@ -80,12 +80,4 @@ export class PostMappingService {
         };
     }
 
-    // Legacy methods for backward compatibility
-    async enrichPostData(post: Post): Promise<PostResponseDto> {
-        return this.mapToResponse(post);
-    }
-
-    async enrichPostsData(posts: Post[]): Promise<PostResponseDto[]> {
-        return posts.map(post => this.mapToResponse(post));
-    }
 }

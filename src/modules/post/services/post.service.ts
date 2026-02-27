@@ -10,8 +10,6 @@ import { PostMappingService } from './post-mapping.service';
 
 import { DatabaseService } from '../../../common/services/database.service';
 import { QueryBuilderService } from '../../../common/services/query-builder.service';
-import { ApiBaseQueryDto } from '../../../common/dtos/api-query.dto';
-import { PaginatedApiResponseDto } from '../../../common/dtos/api-response.dto';
 import { PaginatedResult } from '../../../common/interfaces/query-builder.interface';
 
 @Injectable()
@@ -22,15 +20,6 @@ export class PostService implements IPostService {
         private readonly queryBuilderService: QueryBuilderService,
     ) {}
 
-    async create(createPostDto: PostCreateDto, userId: string): Promise<PostResponseDto> {
-        const post = await this.databaseService.postRepository.create({
-            ...createPostDto,
-            createdBy: userId,
-        });
-
-        return this.postMappingService.mapToResponse(post);
-    }
-
     async createPost(createPostDto: PostCreateDto, userId: string): Promise<PostResponseDto> {
         const post = await this.databaseService.postRepository.create({
             title: createPostDto.title,
@@ -39,23 +28,7 @@ export class PostService implements IPostService {
             createdBy: userId,
         });
 
-        return this.postMappingService.enrichPostData(post);
-    }
-
-    async findAll(queryParams: ApiBaseQueryDto): Promise<PaginatedApiResponseDto<PostResponseDto>> {
-        const queryOptions = {
-            model: 'post',
-            dto: queryParams,
-            searchFields: ['title', 'content'],
-        };
-
-        const result = await this.queryBuilderService.findManyWithPagination(queryOptions);
-
-        return this.postMappingService.mapToListResponse(
-            result.items as any[],
-            result.meta.total,
-            queryParams,
-        );
+        return this.postMappingService.mapToResponse(post);
     }
 
     async findOne(id: string): Promise<PostResponseDto | null> {
@@ -64,12 +37,6 @@ export class PostService implements IPostService {
         if (!post) {
             return null;
         }
-
-        return this.postMappingService.mapToResponse(post);
-    }
-
-    async update(id: string, updatePostDto: PostUpdateDto): Promise<PostResponseDto> {
-        const post = await this.databaseService.postRepository.update(id, updatePostDto);
 
         return this.postMappingService.mapToResponse(post);
     }
@@ -95,7 +62,7 @@ export class PostService implements IPostService {
         });
 
         return {
-            items: await this.postMappingService.enrichPostsData(result.items as any[]),
+            items: result.items.map(post => this.postMappingService.mapToResponse(post as any)),
             meta: result.meta,
         };
     }
@@ -110,7 +77,7 @@ export class PostService implements IPostService {
             updatedBy: userId,
         });
 
-        return this.postMappingService.enrichPostData(updatedPost);
+        return this.postMappingService.mapToResponse(updatedPost);
     }
 
     async softDeletePosts(userId: string, postIds: string[]): Promise<PostBulkResponseDto> {

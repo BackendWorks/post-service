@@ -137,7 +137,7 @@ export class PostGrpcController {
             if (request.title) updatePostDto.title = request.title;
             if (request.content) updatePostDto.content = request.content;
 
-            const post = await this.postService.update(request.id, updatePostDto);
+            const post = await this.postService.updatePost('', request.id, updatePostDto);
 
             return {
                 success: true,

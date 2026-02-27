@@ -32,6 +32,5 @@ import { join } from 'path';
         }),
     ],
     controllers: [AppController, PostGrpcController],
-    providers: [],
 })
 export class AppModule {}

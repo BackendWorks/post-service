@@ -1,14 +1,13 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, OnModuleDestroy, OnModuleInit, Logger } from '@nestjs/common';
 import { HealthIndicatorResult } from '@nestjs/terminus';
 import { createPostDbManager, IPostDbManager, IPostRepository } from '@backendworks/post-db';
 
 @Injectable()
-export class DatabaseService {
-    protected logger: Logger;
+export class DatabaseService implements OnModuleInit, OnModuleDestroy {
+    private readonly logger = new Logger(DatabaseService.name);
     private readonly dbManager: IPostDbManager;
 
     constructor() {
-        this.logger = new Logger(DatabaseService.name);
         this.dbManager = createPostDbManager(process.env.DATABASE_URL as string);
     }
 
